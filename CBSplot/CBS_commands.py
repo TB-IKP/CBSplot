@@ -9,7 +9,7 @@ from datetime import datetime
 #		Dic Keys
 #---------------------------------------------------------------------------------------#
 
-Dic_Keys = {0:'energy',1:'BE2',2:'ME2'}
+Dic_Keys = {0:'energy',1:'BE2',2:'ME2',3:'rho2E0'}
 
 #---------------------------------------------------------------------------------------#
 #		Read input file
@@ -20,6 +20,7 @@ def read_input(self):
 	out_cbs_energies 	= []
 	out_cbs_BE2 		= []
 	out_cbs_ME2 		= []
+	out_cbs_rho2E0 		= []
 
 	cbs_data_file 		= open('%s/%s'% (self.input_path,self.input_file))
 	lines_cbs_data_file 	= list(cbs_data_file.readlines())
@@ -54,7 +55,11 @@ def read_input(self):
 				out_cbs_ME2.append([int(elements_line[1]),int(elements_line[2]),
 							int(elements_line[3]),int(elements_line[4])])
 
-	return np.array(out_cbs_energies),np.array(out_cbs_BE2),np.array(out_cbs_ME2)
+			elif elements_line[0] == 'rho2E0':
+				out_cbs_rho2E0.append([int(elements_line[1]),int(elements_line[2]),
+							int(elements_line[3]),int(elements_line[4])])
+
+	return np.array(out_cbs_energies),np.array(out_cbs_BE2),np.array(out_cbs_ME2),np.array(out_cbs_rho2E0)
 
 #---------------------------------------------------------------------------------------#
 #		Fit CBS to input data
@@ -103,7 +108,7 @@ def calculate_cbs_quantities(self,in_list,in_keyword):
 	for num_quantity,quantity in enumerate(in_list):
 		if in_keyword == 'energy':
 			run_string += '%s %i %i '% (in_keyword,in_list[num_quantity,0],in_list[num_quantity,1])
-		elif in_keyword in ['BE2','ME2']:
+		elif in_keyword in ['BE2','ME2','rho2E0']:
 			run_string += '%s %i %i %i %i '% (in_keyword,in_list[num_quantity,0],in_list[num_quantity,1],
 								in_list[num_quantity,2],in_list[num_quantity,3])
 		else:
@@ -141,7 +146,7 @@ def write_output(self):
 	out_string += '\n'
 
 	for num_param,param in enumerate(self.name_fit_params):
-		out_string += '%s\t%.4f +- %.4f\n'% (param,self.fit_params[2*num_param],self.fit_params[2*num_param+1])
+		out_string += '%s\t%.4f +/- %.4f\n'% (param,self.fit_params[2*num_param],self.fit_params[2*num_param+1])
 
 	out_file = open('%s/results_%i%s.txt'% (self.out_path,self.A,self.nucl_name),'w')
 	out_file.write(out_string)
@@ -155,12 +160,12 @@ def write_output(self):
 
 def main_cbs_calculations(self):
 
-	cbs_energies,cbs_BE2,cbs_ME2 	= read_input(self)
-	output_cbs_params 		= cbs_fit_data(self)
+	cbs_energies,cbs_BE2,cbs_ME2,cbs_rho2E0 	= read_input(self)
+	output_cbs_params 				= cbs_fit_data(self)
 
 	extract_params(self,output_cbs_params)
 
-	for num_quantity,quantity in enumerate([cbs_energies,cbs_BE2,cbs_ME2]):
+	for num_quantity,quantity in enumerate([cbs_energies,cbs_BE2,cbs_ME2,cbs_rho2E0]):
 		if quantity != []:
 			output_cbs_quantities = calculate_cbs_quantities(self,quantity,Dic_Keys[num_quantity])
 			
@@ -176,6 +181,10 @@ def main_cbs_calculations(self):
 				self.cbs_ME2 		= np.zeros((len(cbs_ME2),5))
 				self.cbs_ME2[:,:4]	= cbs_ME2
 				self.cbs_ME2[:,4]	= extract_cbs_quantities(self,output_cbs_quantities)
+			elif num_quantity == 3:
+				self.cbs_rho2E0 	= np.zeros((len(cbs_rho2E0),5))
+				self.cbs_rho2E0[:,:4]	= cbs_rho2E0
+				self.cbs_rho2E0[:,4]	= extract_cbs_quantities(self,output_cbs_quantities)
 
 	if self.write_output:
 		 write_output(self)

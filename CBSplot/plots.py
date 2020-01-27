@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from uncertainties import ufloat
+
 #---------------------------------------------------------------------------------------#
 #		General
 #---------------------------------------------------------------------------------------#
@@ -8,7 +10,8 @@ import matplotlib.pyplot as plt
 #Colors
 
 COLOR_LEVEL 		= 'black'
-COLOR_TRANSITION 	= 'royalblue'
+COLOR_E2 		= 'royalblue'
+COLOR_RHO2E0 		= 'firebrick'
 
 #Offsets
 
@@ -54,20 +57,25 @@ class Level():
 		return
 
 class Transition():
-	def __init__(self,ax,bands,energies,value,print_val):
+	def __init__(self,ax,bands,energies,value,print_val,color):
 		self.ax 	= ax
 		self.bands 	= bands
 		self.energies	= np.array(energies)/10**3
 		self.value 	= value
 		self.print_val 	= print_val
-		self.color 	= COLOR_TRANSITION
+		self.color 	= color
 
 	def create_string(self):
 
 		if len(self.value)==1:
 			out_string = r'$%s$'% (str(self.value[0]))
 		elif len(self.value)==2:
-			out_string = r'$%s(%s)$'% (str(self.value[0]),str(self.value[1]))
+			unc_value  = ufloat(self.value[0],self.value[1])
+			if self.value[1] > 2 and self.value[1] < 10:
+				out_string = '{:.1uS}'.format(unc_value)
+			else:
+				out_string = '{:.2uS}'.format(unc_value)
+			#out_string = r'$%s(%s)$'% (str(self.value[0]),str(self.value[1]))
 		elif len(self.value)==3:
 			out_string = r'$%s^{%s}_{%s}$'% (str(self.value[0]),str(self.value[1]),str(self.value[2]))
 
@@ -132,6 +140,7 @@ def load_experiment(self):
 
 	out_exp_energies 	= []
 	out_exp_BE2 		= []
+	out_exp_rho2E0 		= []
 
 	exp_data_file 		= open('%s/%s'% (self.exp_path,self.exp_file))
 	lines_exp_data_file 	= list(exp_data_file.readlines())
@@ -151,7 +160,12 @@ def load_experiment(self):
 							int(elements_line[3]),int(elements_line[4]),
 							float(elements_line[5]),float(elements_line[6])])
 
-	return np.array(out_exp_energies),np.array(out_exp_BE2)
+			elif elements_line[0] == 'XXXXXX':	#rho2E0????
+				out_exp_BE2.append([int(elements_line[1]),int(elements_line[2]),
+							int(elements_line[3]),int(elements_line[4]),
+							float(elements_line[5]),float(elements_line[6])])
+
+	return np.array(out_exp_energies),np.array(out_exp_BE2),np.array(out_exp_rho2E0)
 
 #---------------------------------------------------------------------------------------#
 #		Plot comparison
@@ -163,7 +177,7 @@ def plot_comparison(self):
 
 	#----- Experiment -----#
 
-	self.exp_energies,self.exp_BE2 = load_experiment(self)
+	self.exp_energies,self.exp_BE2,self.exp_rho2E0 = load_experiment(self)
 
 	for state in self.exp_energies:
 		Level(ax[0],int(state[1]),state[2],'$%i^+$'% state[0]).plot()
@@ -176,7 +190,14 @@ def plot_comparison(self):
 		energy_start = self.exp_energies[(self.exp_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
 		energy_stop  = self.exp_energies[(self.exp_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],False).plot()
+		Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],True,COLOR_E2).plot()
+
+	for transition in self.exp_rho2E0:
+
+		energy_start = self.exp_energies[(self.exp_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
+		energy_stop  = self.exp_energies[(self.exp_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
+
+		Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],True,COLOR_RHO2E0).plot()
 
 	#----- CBS -----#
 
@@ -189,7 +210,14 @@ def plot_comparison(self):
 		energy_start = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
 		energy_stop  = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True).plot()
+		Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True,COLOR_E2).plot()
+
+	for transition in self.cbs_rho2E0:
+
+		energy_start = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
+		energy_stop  = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
+
+		Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True,COLOR_RHO2E0).plot()
 
 	#----- labels -----#
 

@@ -65,6 +65,7 @@ class CBSplot:
 		self.cbs_energies	= None
 		self.cbs_BE2		= None
 		self.cbs_ME2		= None
+		self.rho2E0		= None
 
 	def run(self):
 		main_cbs_calculations(self)
