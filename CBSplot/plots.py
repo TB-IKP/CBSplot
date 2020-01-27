@@ -137,6 +137,7 @@ class Transition():
 #---------------------------------------------------------------------------------------#
 
 def load_experiment(self):
+	'''Load experimental values as specified in exp_data_file'''
 
 	out_exp_energies 	= []
 	out_exp_BE2 		= []
@@ -171,6 +172,7 @@ def load_experiment(self):
 #---------------------------------------------------------------------------------------#
 
 def plot_comparison(self):
+	'''Plot experimental data alongside CBS predictions for comparison'''
 
 	fig,ax = plt.subplots(1,2,figsize=(12,10))
 

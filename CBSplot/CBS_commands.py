@@ -16,6 +16,7 @@ Dic_Keys = {0:'energy',1:'BE2',2:'ME2',3:'rho2E0'}
 #---------------------------------------------------------------------------------------#
 
 def read_input(self):
+	'''Read and parse cbsmodel input file'''
 
 	out_cbs_energies 	= []
 	out_cbs_BE2 		= []
@@ -66,6 +67,7 @@ def read_input(self):
 #---------------------------------------------------------------------------------------#
 
 def cbs_fit_data(self):
+	'''Fit CBS to dta as indicated in cbsmodel input file'''
 
 	run_string  = 'A %i Z %i '% (self.A,self.Z)
 	run_string += 'Wu simpleoutput '
@@ -81,6 +83,7 @@ def cbs_fit_data(self):
 #---------------------------------------------------------------------------------------#
 
 def extract_params(self,in_output_cbs):
+	'''Extract structural parameters (r_beta etc.) from cbsmodel output'''
 
 	in_output_cbs 	= in_output_cbs.split()
 
@@ -98,6 +101,7 @@ def extract_params(self,in_output_cbs):
 #---------------------------------------------------------------------------------------#
 
 def calculate_cbs_quantities(self,in_list,in_keyword):
+	'''Use obtained structural parameters to calculate CBS predictions for quantities specified in input file'''
 
 	run_string  = 'A %i Z %i '% (self.A,self.Z)
 	run_string += 'Wu simpleoutput '
@@ -125,6 +129,7 @@ def calculate_cbs_quantities(self,in_list,in_keyword):
 #---------------------------------------------------------------------------------------#
 
 def extract_cbs_quantities(self,in_output_cbs):
+	'''Extract specified qauntities from cbsmodel output'''
 
 	in_output_cbs 	= in_output_cbs.split()
 
@@ -137,6 +142,7 @@ def extract_cbs_quantities(self,in_output_cbs):
 #---------------------------------------------------------------------------------------#
 
 def write_output(self):
+	'''Write essential output of cbsmodel to file'''
 
 	out_string  = '#############################\n'
 	out_string += '#      Results CBSplot      #\n'
@@ -159,6 +165,7 @@ def write_output(self):
 #---------------------------------------------------------------------------------------#
 
 def main_cbs_calculations(self):
+	'''Perform complete CBS calculation as specified in cbsmodel input file'''
 
 	cbs_energies,cbs_BE2,cbs_ME2,cbs_rho2E0 	= read_input(self)
 	output_cbs_params 				= cbs_fit_data(self)
