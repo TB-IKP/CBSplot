@@ -147,7 +147,6 @@ def load_experiment(self):
 	exp_data_file.close()
 
 	for num_line,line in enumerate(lines_exp_data_file):
-
 		if len(line) > 1:
 			elements_line = line.split()
 
@@ -156,12 +155,12 @@ def load_experiment(self):
 							float(elements_line[3]),float(elements_line[4])])
 
 			elif elements_line[0] == 'T':
-				out_exp_BE2.append([int(elements_line[1]),int(elements_line[2]),
+				if int(elements_line[1]) == 0 and int(elements_line[3]) == 0:
+					out_exp_rho2E0.append([int(elements_line[1]),int(elements_line[2]),
 							int(elements_line[3]),int(elements_line[4]),
 							float(elements_line[5]),float(elements_line[6])])
-
-			elif elements_line[0] == 'XXXXXX':	#rho2E0????
-				out_exp_BE2.append([int(elements_line[1]),int(elements_line[2]),
+				else:
+					out_exp_BE2.append([int(elements_line[1]),int(elements_line[2]),
 							int(elements_line[3]),int(elements_line[4]),
 							float(elements_line[5]),float(elements_line[6])])
 
