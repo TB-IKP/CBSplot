@@ -7,7 +7,7 @@ It is based on the program `cbsmodel` [[2]](#Ree16a) by M. Reese and shares its 
 
 ## Dependencies
 
-* cbsmodel [[2]]
+* cbsmodel [[2]](#Ree16a)
 * python (> 3.6)
 * numpy
 * matplotlib
@@ -15,7 +15,7 @@ It is based on the program `cbsmodel` [[2]](#Ree16a) by M. Reese and shares its 
 
 ## Usage
 
-An introduction to the syntax of `cbsmodel` is given in its manual [[2]].
+An introduction to the syntax of `cbsmodel` is given in its manual [[2]](#Ree16a).
 The library `CBSplot` requires the following three text files:
 
 * `input_file` containing all `cbsmodel` commands,
