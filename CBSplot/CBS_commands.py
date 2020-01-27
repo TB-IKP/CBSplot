@@ -3,6 +3,8 @@ import warnings
 
 import numpy as np
 
+from datetime import datetime
+
 #---------------------------------------------------------------------------------------#
 #		Dic Keys
 #---------------------------------------------------------------------------------------#
@@ -130,6 +132,20 @@ def extract_cbs_quantities(self,in_output_cbs):
 #---------------------------------------------------------------------------------------#
 
 def write_output(self):
+
+	out_string  = '#############################\n'
+	out_string += '#      Results CBSplot      #\n'
+	out_string += '#           %i%s           #\n'% (self.A,self.nucl_name)
+	out_string += '#    %s    #\n'% datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+	out_string += '#############################\n'
+	out_string += '\n'
+
+	for num_param,param in enumerate(self.name_fit_params):
+		out_string += '%s\t%.4f +- %.4f\n'% (param,self.fit_params[2*num_param],self.fit_params[2*num_param+1])
+
+	out_file = open('%s/results_%i%s.txt'% (self.out_path,self.A,self.nucl_name),'w')
+	out_file.write(out_string)
+	out_file.close()
 
 	return
 

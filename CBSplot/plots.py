@@ -5,17 +5,12 @@ import matplotlib.pyplot as plt
 #		General
 #---------------------------------------------------------------------------------------#
 
-EPSILON			= 50 	#in keV
+#Colors
 
-COLOR_STATE 		= 'black'
+COLOR_LEVEL 		= 'black'
+COLOR_TRANSITION 	= 'royalblue'
 
-COLOR_TRANSITION 	= 'black'
-COLOR_E2 		= 'red'
-
-COLOR_PRIMARY 		= 'green'
-COLOR_SECONDARY 	= 'red'
-
-COLOR_BEAM 		= 'darkgray'
+#Offsets
 
 EN_X_OFF		= 0.3
 EN_Y_OFF		= 150
@@ -23,18 +18,18 @@ EN_Y_OFF		= 150
 STATE_X_OFF		= 0.05
 STATE_Y_OFF		= 150
 
+#Arrows
+
 WIDTH	 		= 5
 FONTSIZE 		= 14
 OFFSET 			= 0.003
-
-#FACTORS_ARROW 		= {}
 
 #---------------------------------------------------------------------------------------#
 #		Classes
 #---------------------------------------------------------------------------------------#
 
 class Level():
-	def __init__(self,ax,band,energy,name,color):
+	def __init__(self,ax,band,energy,name):
 		
 		self.ax 	= ax
 		self.band 	= band
@@ -45,7 +40,7 @@ class Level():
 		#	self.energy 	= energy
 		#	self.offset 	= 10
 		self.name 	= name
-		self.color 	= color
+		self.color 	= COLOR_LEVEL
 
 	def plot(self):
 		self.ax.set_xlim(0,self.band*5+6)
@@ -59,13 +54,13 @@ class Level():
 		return
 
 class Transition():
-	def __init__(self,ax,bands,energies,value,print_val,color):
+	def __init__(self,ax,bands,energies,value,print_val):
 		self.ax 	= ax
 		self.bands 	= bands
 		self.energies	= np.array(energies)/10**3
 		self.value 	= value
 		self.print_val 	= print_val
-		self.color 	= color
+		self.color 	= COLOR_TRANSITION
 
 	def create_string(self):
 
@@ -171,32 +166,30 @@ def plot_comparison(self):
 	self.exp_energies,self.exp_BE2 = load_experiment(self)
 
 	for state in self.exp_energies:
-		Level(ax[0],int(state[1]),state[2],'$%i^+$'% state[0],'black').plot()
+		Level(ax[0],int(state[1]),state[2],'$%i^+$'% state[0]).plot()
 
 	#dummy state to ensure correct width of plot
-	Level(ax[0],1,-1,'','white').plot()
+	Level(ax[0],1,-1e5,'').plot()
 
 	for transition in self.exp_BE2:
 
 		energy_start = self.exp_energies[(self.exp_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
 		energy_stop  = self.exp_energies[(self.exp_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],
-				False,color='royalblue').plot()
+		Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],False).plot()
 
 	#----- CBS -----#
 
 	for state in self.cbs_energies:
 
-		Level(ax[1],int(state[1]),state[2],'$%i^+$'% state[0],'black').plot()
+		Level(ax[1],int(state[1]),state[2],'$%i^+$'% state[0]).plot()
 
 	for transition in self.cbs_BE2:
 
 		energy_start = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
 		energy_stop  = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],
-				True,color='royalblue').plot()
+		Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True).plot()
 
 	#----- labels -----#
 
@@ -213,10 +206,14 @@ def plot_comparison(self):
 		ax[1].text(0.5*(3*WIDTH-1),np.min(self.cbs_energies[:,2][self.cbs_energies[:,1]==1])/10**3-0.075,
 			r'$K^{\pi}=0^+$',ha='center',va='center',fontsize=FONTSIZE)
 
+	#find value of r_beta
+	val_rb 			= self.fit_params[2*self.name_fit_params.index('rb')]
+	title_string_cbs 	= 'CBS '+r'($r_{\beta}=%.2f$)'% val_rb +'\n'
+
 	#figure title
 	fig.suptitle(r'$^{%i}$%s'% (self.A,self.nucl_name),fontsize=2*FONTSIZE)
 	ax[0].set_title('Experiment\n',fontsize=1.5*FONTSIZE)
-	ax[1].set_title('CBS\n',fontsize=1.5*FONTSIZE)
+	ax[1].set_title(title_string_cbs,fontsize=1.5*FONTSIZE)
 
 	#ax[1].text(0.5,1.02,r'$r_{\beta}=0.3552(6)$',horizontalalignment='center',
 	#			verticalalignment='center',transform=ax[1].transAxes,fontsize=FONTSIZE)
