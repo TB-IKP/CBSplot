@@ -32,10 +32,10 @@ In order to apply the CBS model to the nucleus <sup>154</sup>Sm, the following c
 import CBSplot as cbs
 
 cbs_154Sm = cbs.CBSplot(nucleus=['Sm',62,92],
-						input_file=input_file.cbs,
-						exp_data_file=exp_data_file.ET,
-						out_path='~/my/CBS/calculations',
-						write_output=True)
+			input_file=input_file.cbs,
+			exp_data_file=exp_data_file.ET,
+			out_path='~/my/CBS/calculations',
+			write_output=True)
 						
 cbs_154Sm.run()
 cbs_154Sm.plot()
