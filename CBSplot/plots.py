@@ -152,10 +152,18 @@ def load_experiment(self):
 			elements_line = line.split()
 
 			if elements_line[0] == 'E':
+				#if len(elements_line) != 5:
+				#	raise ValueError('experimental input for energy not correct in %s!\n \
+				#		Must be `E L s val delta_val` not `%s`!'% (self.exp_file,' '.join(elements_line)))
+				
 				out_exp_energies.append([int(elements_line[1]),int(elements_line[2]),
 							float(elements_line[3]),float(elements_line[4])])
 
 			elif elements_line[0] == 'T':
+				#if len(elements_line) != 7:
+				#	raise ValueError('experimental input for energy not correct in %s!\n \
+				#		Must be `T L1 s1 L2 s2 val delta_val` not `%s`!'% (self.exp_file,' '.join(elements_line)))
+
 				if int(elements_line[1]) == 0 and int(elements_line[3]) == 0:
 					out_exp_rho2E0.append([int(elements_line[1]),int(elements_line[2]),
 							int(elements_line[3]),int(elements_line[4]),

@@ -52,11 +52,19 @@ def read_input(self):
 					warnings.warn('Charge numbers do not coincide! Using Z = %i'% self.Z,UserWarning)
 
 			elif elements_line[0] == 'fit':
+				if len(elements_line) < 3:
+					raise ValueError('cbsmodel fit command should specify the data file\n \
+						and at least one fit parameter!')
+
 				self.name_fit_params 	= elements_line[2:]
 				self.cbs_file 		= elements_line[1].split('/')[-1]
 				self.cbs_path  		= '/'.join(elements_line[1].split('/')[:-1])
 
 			elif elements_line[0] == 'energy':
+				if len(elements_line) != 3:
+					raise ValueError('cbsmodel input for energy not correct in %s!\n \
+						Must be `energy L s` not `%s`!'% (self.cbs_file,' '.join(elements_line)))
+
 				out_cbs_energies.append([int(elements_line[1]),int(elements_line[2])])
 
 			elif elements_line[0] == 'BE2':
