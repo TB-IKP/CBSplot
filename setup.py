@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
         name='CBSplot',
-        version='0.2.0',
+        version='0.2.1',
         description='Plot routine for cbsmodel',
         url='http://github.com/TB-IKP/CBSplot',
         author='Tobias Beck',
