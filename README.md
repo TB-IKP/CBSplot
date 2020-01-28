@@ -3,7 +3,8 @@
 This [python](https://www.python.org/) library can be used to perform calculations 
 in the framework of the Confined β-soft (CBS) Rotor Model [[1]](#Pie04a)
 and provide levelschemes for the comparison to experimental data.
-It is based on the program `cbsmodel` [[2]](#Ree16a) by M. Reese and shares its syntax.
+It is based on the program `cbsmodel` [[2]](#Ree16a) by M. Reese and
+basically shares its syntax.
 
 ## Dependencies
 
@@ -12,6 +13,16 @@ It is based on the program `cbsmodel` [[2]](#Ree16a) by M. Reese and shares its 
 * numpy
 * matplotlib
 * uncertainties
+
+## Install
+
+`CBSplot` can be obtained by cloning this repository to the local system and running
+
+```
+pip3 install CBSplot/
+```
+
+in the command line.
 
 ## Usage
 
@@ -26,7 +37,7 @@ The first two files are known from traditional calculations using `cbsmodel`
 and do not need to be rewritten for usage with `CBSplot`.
 The last file uses the same syntax as the CBS data file.
 
-In order to apply the CBS model to the nucleus <sup>154</sup>Sm, the following code can be used:
+In order to apply `CBSplot` to the nucleus <sup>154</sup>Sm, the following code can be used:
 
 ```
 import CBSplot as cbs
@@ -46,4 +57,4 @@ The methods `run()` and `plot()` perform the CBS calculations and plot the resul
 ## References
 
 <a name='Pie04a'>[1]</a> N. Pietralla and O.M. Gorbachenko, Phys. Rev. C **70**, 011304(R) (2004). [`doi:10.1103/PhysRevC.70.011304`](https://doi.org/10.1103/PhysRevC.70.011304).  
-<a name='Ree16a'>[2]</a> M. Reese, [`cbsmodel`](https://sourceforge.net/projects/cbsmodel/).  
+<a name='Ree16a'>[2]</a> M. Reese (2008), [`cbsmodel`](https://sourceforge.net/projects/cbsmodel/).  

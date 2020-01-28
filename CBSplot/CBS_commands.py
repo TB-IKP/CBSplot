@@ -1,15 +1,26 @@
 import subprocess
 import warnings
+import sys
 
 import numpy as np
 
 from datetime import datetime
 
 #---------------------------------------------------------------------------------------#
-#		Dic Keys
+#		Dics and Colors
 #---------------------------------------------------------------------------------------#
 
-Dic_Keys = {0:'energy',1:'BE2',2:'ME2',3:'rho2E0'}
+Dic_Keys 	= {0:'energy',1:'BE2',2:'ME2',3:'rho2E0'}
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 #---------------------------------------------------------------------------------------#
 #		Read input file
@@ -49,11 +60,19 @@ def read_input(self):
 				out_cbs_energies.append([int(elements_line[1]),int(elements_line[2])])
 
 			elif elements_line[0] == 'BE2':
-				out_cbs_BE2.append([int(elements_line[1]),int(elements_line[2]),
+				if int(elements_line[1]) == 0 and int(elements_line[3]) == 0:
+					warnings.warn('No E2 gamma transition between two states with J=0 possible.\n \
+						Ignoring the transition %s.'% ' '.join(elements_line),UserWarning)
+				else:
+					out_cbs_BE2.append([int(elements_line[1]),int(elements_line[2]),
 							int(elements_line[3]),int(elements_line[4])])
 
 			elif elements_line[0] == 'ME2':
-				out_cbs_ME2.append([int(elements_line[1]),int(elements_line[2]),
+				if int(elements_line[1]) == 0 and int(elements_line[3]) == 0:
+					warnings.warn('No E2 gamma transition between two states with J=0 possible.\n \
+						Ignoring the transition %s.'% ' '.join(elements_line),UserWarning)
+				else:
+					out_cbs_ME2.append([int(elements_line[1]),int(elements_line[2]),
 							int(elements_line[3]),int(elements_line[4])])
 
 			elif elements_line[0] == 'rho2E0':
@@ -66,12 +85,16 @@ def read_input(self):
 #		Fit CBS to input data
 #---------------------------------------------------------------------------------------#
 
-def cbs_fit_data(self):
+def cbs_fit_data(self,*args):
 	'''Fit CBS to dta as indicated in cbsmodel input file'''
 
 	run_string  = 'A %i Z %i '% (self.A,self.Z)
-	run_string += 'Wu simpleoutput '
-	run_string += 'fit %s/%s %s '% (self.cbs_path,self.cbs_file,' '.join(self.name_fit_params))
+	run_string += 'Wu '
+	
+	for arg in args:
+		run_string += '%s '% arg
+	
+	run_string += 'fit %s/%s %s '% (self.cbs_path,self.cbs_file,' '.join(self.name_fit_params))	
 	run_string += 'exit'  
 
 	output_cbs = subprocess.run('cbsmodel %s'% run_string,shell=True,capture_output=True).stdout
@@ -82,17 +105,37 @@ def cbs_fit_data(self):
 #		Extract CBS parameters
 #---------------------------------------------------------------------------------------#
 
-def extract_params(self,in_output_cbs):
+def extract_params(self):
 	'''Extract structural parameters (r_beta etc.) from cbsmodel output'''
 
-	in_output_cbs 	= in_output_cbs.split()
+	#Perform fits to data with different r_beta until solution is found
+	for r_beta in np.arange(0.1,1,0.2):
 
-	self.red_chi 	= float(in_output_cbs[3])
+		output_cbs = cbs_fit_data(self,'rb %s'% r_beta)
+		
+		if b'Fit successful' in output_cbs:
+			self.cbs_fit_success = True
+			print('Fit successful!')
+			break
+
+		print('Fit with starting value r_beta = %.2f not successful. Continuing...'% r_beta)
+	
+	else:	
+		sys.exit(f'{bcolors.FAIL}Error: Fits in cbsmodel did not converge.{bcolors.ENDC}')
+
+	#Split output by linebreaks
+	output_cbs 	= output_cbs.split(b'\n')
+
+	#extract reduced chisquare and fit parameters
+	self.red_chi 	= float(output_cbs[16].split(b':')[1])
 	self.fit_params = np.zeros((2*len(self.name_fit_params)))
 
 	for i in range(len(self.name_fit_params)):
-		self.fit_params[2*i] 	= float(in_output_cbs[5+3*i])
-		self.fit_params[2*i+1] 	= float(in_output_cbs[5+3*i+1])
+
+		string_param = output_cbs[7+i].split(b':')[1].split(b'+-')
+
+		self.fit_params[2*i] 	= float(string_param[0])
+		self.fit_params[2*i+1] 	= float(string_param[1])
 
 	return
 
@@ -151,8 +194,24 @@ def write_output(self):
 	out_string += '#############################\n'
 	out_string += '\n'
 
+	#CBS parameters
 	for num_param,param in enumerate(self.name_fit_params):
-		out_string += '%s\t%.4f +/- %.4f\n'% (param,self.fit_params[2*num_param],self.fit_params[2*num_param+1])
+		out_string += '%s\t%.5f +/- %.5f\n'% (param,self.fit_params[2*num_param],self.fit_params[2*num_param+1])
+
+	out_string += '\n'
+
+	#extracted quantities
+	for num_quantity,quantity in enumerate([self.cbs_energies,self.cbs_BE2,self.cbs_ME2,self.cbs_rho2E0]):
+		if isinstance(quantity,np.ndarray):
+			for element in quantity:
+				#print(element)
+				if num_quantity == 0:
+					out_string += '%s %i %i %.2f\n'% (Dic_Keys[num_quantity],element[0],
+										element[1],element[2])
+				else:
+					out_string += '%s %i %i %i %i %.2f\n'% (Dic_Keys[num_quantity],element[0],
+										element[1],element[2],element[3],element[4])
+			out_string += '\n'
 
 	out_file = open('%s/results_%i%s.txt'% (self.out_path,self.A,self.nucl_name),'w')
 	out_file.write(out_string)
@@ -167,10 +226,11 @@ def write_output(self):
 def main_cbs_calculations(self):
 	'''Perform complete CBS calculation as specified in cbsmodel input file'''
 
+	#extract quantities to be calculated
 	cbs_energies,cbs_BE2,cbs_ME2,cbs_rho2E0 	= read_input(self)
-	output_cbs_params 				= cbs_fit_data(self)
-
-	extract_params(self,output_cbs_params)
+	
+	#perform CBS fit to data and extract parameters (r_beta, etc.)
+	extract_params(self)
 
 	for num_quantity,quantity in enumerate([cbs_energies,cbs_BE2,cbs_ME2,cbs_rho2E0]):
 		if quantity != []:

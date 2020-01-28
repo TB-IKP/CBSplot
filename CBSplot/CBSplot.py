@@ -82,18 +82,18 @@ class CBSplot:
 		self.rho2E0		= None
 
 		#Check whether CBS calculation has been performed. Substitute with success message at later stage. 
-		self.cbs_fit = False
+		self.cbs_fit_success = False
 
 	def run(self):
 		'''Run the requested calculations in cbsmodel'''
 		main_cbs_calculations(self)
-		self.cbs_fit = True
 
 	def plot(self):
 		'''Plot experimental values alongside results of the CBS calculation'''
-		if not self.cbs_fit:
+		if not self.cbs_fit_success:
 			raise ValueError('No CBS calculation available.\n \
-				Run .run() before .plot()!')
+				Either .run() was not invoked before .plot()\n \
+				or the fit of cbsmodel was not successful!')
 
 		plot_comparison(self)
 
