@@ -53,7 +53,7 @@ cbs_154Sm.plot()
 ```
 
 The methods `run()` and `plot()` perform the CBS calculations and plot the results, respectively.
-A minimal example can be found in the [examples](examples) directory.
+A minimal example can be found in the [example](example) directory.
 
 ## References
 
