@@ -34,9 +34,8 @@ def read_input(self):
 	out_cbs_ME2 		= []
 	out_cbs_rho2E0 		= []
 
-	cbs_data_file 		= open('%s/%s'% (self.input_path,self.input_file))
+	cbs_data_file 		= open('%s%s'% (self.input_path,self.input_file))
 	lines_cbs_data_file 	= list(cbs_data_file.readlines())
-	cbs_data_file.close()
 
 	for num_line,line in enumerate(lines_cbs_data_file):
 		
@@ -57,8 +56,14 @@ def read_input(self):
 						and at least one fit parameter!')
 
 				self.name_fit_params 	= elements_line[2:]
-				self.cbs_file 		= elements_line[1].split('/')[-1]
-				self.cbs_path  		= '/'.join(elements_line[1].split('/')[:-1])
+
+				splitted_cbs_file 	= elements_line[1].split('/')
+				self.cbs_file 		= splitted_cbs_file[-1]
+
+				if len(splitted_cbs_file) == 1:
+					self.cbs_path  	= ''
+				else:
+					self.cbs_path  	= '/'.join(elements_line[1].split('/')[:-1])+'/'
 
 			elif elements_line[0] == 'energy':
 				if len(elements_line) != 3:
@@ -102,7 +107,7 @@ def cbs_fit_data(self,*args):
 	for arg in args:
 		run_string += '%s '% arg
 	
-	run_string += 'fit %s/%s %s '% (self.cbs_path,self.cbs_file,' '.join(self.name_fit_params))	
+	run_string += 'fit %s%s %s '% (self.cbs_path,self.cbs_file,' '.join(self.name_fit_params))	
 	run_string += 'exit'  
 
 	output_cbs = subprocess.run('cbsmodel %s'% run_string,shell=True,capture_output=True).stdout
@@ -221,7 +226,7 @@ def write_output(self):
 										element[1],element[2],element[3],element[4])
 			out_string += '\n'
 
-	out_file = open('%s/results_%i%s.txt'% (self.out_path,self.A,self.nucl_name),'w')
+	out_file = open('%sresults_%i%s.txt'% (self.out_path,self.A,self.nucl_name),'w')
 	out_file.write(out_string)
 	out_file.close()
 

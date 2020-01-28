@@ -143,7 +143,7 @@ def load_experiment(self):
 	out_exp_BE2 		= []
 	out_exp_rho2E0 		= []
 
-	exp_data_file 		= open('%s/%s'% (self.exp_path,self.exp_file))
+	exp_data_file 		= open('%s%s'% (self.exp_path,self.exp_file))
 	lines_exp_data_file 	= list(exp_data_file.readlines())
 	exp_data_file.close()
 
@@ -267,7 +267,7 @@ def plot_comparison(self):
 
 	#----- other stuff -----#
 
-	plt.savefig('%s/levelscheme_%i%s.pdf'% (self.out_path,self.A,self.nucl_name))
+	plt.savefig('%slevelscheme_%i%s.pdf'% (self.out_path,self.A,self.nucl_name))
 
 	return
 

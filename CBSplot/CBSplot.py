@@ -54,16 +54,26 @@ class CBSplot:
 			raise ValueError('input_file must be string pointing to the CBS input file.\n \
 						This file must contain all CBS commands.')
 		else:
-			self.input_file = input_file.split('/')[-1]
-			self.input_path = '/'.join(input_file.split('/')[:-1])
+			splitted_input_file 	= input_file.split('/')
+			self.input_file 	= splitted_input_file[-1]
+
+			if len(splitted_input_file) == 1:
+				self.input_path = ''
+			else:
+				self.input_path = '/'.join(splitted_input_file[:-1])+'/'
 
 		if not isinstance(exp_data_file,str):
 			raise ValueError('exp_data_file must be string pointing to a data file.\n \
 			 			This file contains all energies and transition strengths\n \
 						to be plotted in the experimental spectrum.')
 		else:
-			self.exp_file 	= exp_data_file.split('/')[-1]
-			self.exp_path 	= '/'.join(exp_data_file.split('/')[:-1])
+			splitted_exp_data_file 	= exp_data_file.split('/')
+			self.exp_file 		= splitted_exp_data_file[-1]
+
+			if len(splitted_exp_data_file) == 1:
+				self.exp_path 	= ''
+			else:
+				self.exp_path 	= '/'.join(splitted_exp_data_file[:-1])+'/'
 
 		if not isinstance(out_path,str):
 			raise ValueError('out_path must be string.\n \
