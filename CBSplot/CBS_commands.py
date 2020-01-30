@@ -132,7 +132,7 @@ def extract_params(self):
 				print('Fit successful!')
 			break
 
-		if verbose:
+		if self.verbose:
 			print('Fit with starting value r_beta = %.2f not successful. Continuing...'% r_beta)
 	
 	else:	
