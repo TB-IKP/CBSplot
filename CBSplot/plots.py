@@ -188,45 +188,51 @@ def plot_comparison(self):
 
 	self.exp_energies,self.exp_BE2,self.exp_rho2E0 = load_experiment(self)
 
-	for state in self.exp_energies:
-		Level(ax[0],int(state[1]),state[2],'$%i^+$'% state[0]).plot()
+	if self.exp_energies != []:
+		for state in self.exp_energies:
+			Level(ax[0],int(state[1]),state[2],'$%i^+$'% state[0]).plot()
 
 	#dummy state to ensure correct width of plot
-	Level(ax[0],1,-1e5,'').plot()
+	#Level(ax[0],1,-1e5,'').plot()
 
-	for transition in self.exp_BE2:
+	if self.exp_BE2 != []:
+		for transition in self.exp_BE2:
 
-		energy_start = self.exp_energies[(self.exp_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
-		energy_stop  = self.exp_energies[(self.exp_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
+			energy_start = self.exp_energies[(self.exp_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
+			energy_stop  = self.exp_energies[(self.exp_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],True,COLOR_E2).plot()
+			Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],True,COLOR_E2).plot()
 
-	for transition in self.exp_rho2E0:
+	if self.exp_rho2E0 != []:
+		for transition in self.exp_rho2E0:
 
-		energy_start = self.exp_energies[(self.exp_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
-		energy_stop  = self.exp_energies[(self.exp_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
+			energy_start = self.exp_energies[(self.exp_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
+			energy_stop  = self.exp_energies[(self.exp_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],True,COLOR_RHO2E0).plot()
+			Transition(ax[0],[transition[1],transition[3]],[energy_start,energy_stop],[transition[4],transition[5]],True,COLOR_RHO2E0).plot()
 
 	#----- CBS -----#
 
-	for state in self.cbs_energies:
+	if self.cbs_energies != []:
+		for state in self.cbs_energies:
 
-		Level(ax[1],int(state[1]),state[2],'$%i^+$'% state[0]).plot()
+			Level(ax[1],int(state[1]),state[2],'$%i^+$'% state[0]).plot()
 
-	for transition in self.cbs_BE2:
+	if self.cbs_BE2 != []:
+		for transition in self.cbs_BE2:
 
-		energy_start = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
-		energy_stop  = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
+			energy_start = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
+			energy_stop  = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True,COLOR_E2).plot()
+			Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True,COLOR_E2).plot()
 
-	for transition in self.cbs_rho2E0:
+	if self.cbs_rho2E0 != []:
+		for transition in self.cbs_rho2E0:
 
-		energy_start = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
-		energy_stop  = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
+			energy_start = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[0],transition[1])).all(axis=1).nonzero()][0,2]
+			energy_stop  = self.cbs_energies[(self.cbs_energies[:,0:2]==(transition[2],transition[3])).all(axis=1).nonzero()][0,2]
 
-		Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True,COLOR_RHO2E0).plot()
+			Transition(ax[1],[transition[1],transition[3]],[energy_start,energy_stop],[int(transition[4])],True,COLOR_RHO2E0).plot()
 
 	#----- labels -----#
 
@@ -251,9 +257,6 @@ def plot_comparison(self):
 	fig.suptitle(r'$^{%i}$%s'% (self.A,self.nucl_name),fontsize=2*FONTSIZE)
 	ax[0].set_title('Experiment\n',fontsize=1.5*FONTSIZE)
 	ax[1].set_title(title_string_cbs,fontsize=1.5*FONTSIZE)
-
-	#ax[1].text(0.5,1.02,r'$r_{\beta}=0.3552(6)$',horizontalalignment='center',
-	#			verticalalignment='center',transform=ax[1].transAxes,fontsize=FONTSIZE)
 
 	#----- limits -----#
 

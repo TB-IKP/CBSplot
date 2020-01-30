@@ -26,6 +26,9 @@ class CBSplot:
 		location where output is stored
 	write_output: bool
 		True if summary of CBS output shall be written to file
+	verbose: bool
+		Status output is plotted if True. 
+		If set to False a successful run will not produce any output.
 
 	Note:
 	-----
@@ -34,7 +37,7 @@ class CBSplot:
 	See the included documentation for more information.
 	'''
 
-	def __init__(self,nucleus=None,input_file=None,exp_data_file=None,out_path='',write_output=False):
+	def __init__(self,nucleus=None,input_file=None,exp_data_file=None,out_path='',write_output=False,verbose=True):
 
 		if nucleus == None or len(nucleus) != 3:
 			raise ValueError('no nucleus is given. Must be list [abbreviated name,Z,N], e.g. [`Sm`,62,92] for 154Sm.')
@@ -76,13 +79,15 @@ class CBSplot:
 		#already set exp_data_file which will be checked later on in self.run()
 		self.exp_data_file 	= exp_data_file
 
-		self.cbs_energies	= None
-		self.cbs_BE2		= None
-		self.cbs_ME2		= None
-		self.rho2E0		= None
+		self.cbs_energies	= []
+		self.cbs_BE2		= []
+		self.cbs_ME2		= []
+		self.cbs_rho2E0		= []
 
 		#Check whether CBS calculation has been performed. Substitute with success message at later stage. 
-		self.cbs_fit_success = False
+		self.cbs_fit_success 	= False
+
+		self.verbose 		= verbose
 
 	def run(self):
 		'''Run the requested calculations in cbsmodel'''

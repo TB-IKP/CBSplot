@@ -128,10 +128,12 @@ def extract_params(self):
 		
 		if b'Fit successful' in output_cbs:
 			self.cbs_fit_success = True
-			print('Fit successful!')
+			if self.verbose:
+				print('Fit successful!')
 			break
 
-		print('Fit with starting value r_beta = %.2f not successful. Continuing...'% r_beta)
+		if verbose:
+			print('Fit with starting value r_beta = %.2f not successful. Continuing...'% r_beta)
 	
 	else:	
 		sys.exit(f'{bcolors.FAIL}Error: Fits in cbsmodel did not converge.{bcolors.ENDC}')
@@ -226,11 +228,7 @@ def write_output(self):
 										element[1],element[2],element[3],element[4])
 			out_string += '\n'
 
-	out_file = open('%sresults_%i%s.txt'% (self.out_path,self.A,self.nucl_name),'w')
-	out_file.write(out_string)
-	out_file.close()
-
-	return
+	return out_string
 
 #---------------------------------------------------------------------------------------#
 #		Main CBS calculations
@@ -266,8 +264,16 @@ def main_cbs_calculations(self):
 				self.cbs_rho2E0[:,:4]	= cbs_rho2E0
 				self.cbs_rho2E0[:,4]	= extract_cbs_quantities(self,output_cbs_quantities)
 
+	#create output and save/print it if requested
+	output = write_output(self)
+
 	if self.write_output:
-		 write_output(self)
+		out_file = open('%sresults_%i%s.txt'% (self.out_path,self.A,self.nucl_name),'w')
+		out_file.write(output)
+		out_file.close()
+	
+	if self.verbose:
+		print(output)
 
 	return
 
