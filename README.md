@@ -53,6 +53,34 @@ cbs_154Sm.plot()
 ```
 
 The methods `run()` and `plot()` perform the CBS calculations and plot the results, respectively.
+If `write_output` is `True`, the CBS parameters and all calculated quantities are stored in 
+the output file `results_154Sm.txt` and stored in the directory specified by `out_path`.
+If the output quantities have to be further processed, they can be obtained by
+
+```
+cbs_154Sm.cbs_energies
+cbs_154Sm.cbs_BE2
+cbs_154Sm.cbs_ME2
+cbs_154Sm.cbs_rho2E0
+```
+
+Similarly, the experimental values, which are used for the creation of the levelscheme,
+can be accessed via
+
+```
+cbs_154Sm.exp_energies
+cbs_154Sm.exp_BE2
+cbs_154Sm.exp_rho2E0
+```
+
+Finally, the set of CBS parameters (rb, Bbm2, bmax, etc.) 
+and the reduced chisquare of the fit can be obtained from
+
+```
+cbs_154Sm.fit_params
+cbs_154Sm.red_chi
+```
+
 A minimal example can be found in the [example](example) directory.
 
 ## References

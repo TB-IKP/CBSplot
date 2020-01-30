@@ -62,19 +62,6 @@ class CBSplot:
 			else:
 				self.input_path = '/'.join(splitted_input_file[:-1])+'/'
 
-		if not isinstance(exp_data_file,str):
-			raise ValueError('exp_data_file must be string pointing to a data file.\n \
-			 			This file contains all energies and transition strengths\n \
-						to be plotted in the experimental spectrum.')
-		else:
-			splitted_exp_data_file 	= exp_data_file.split('/')
-			self.exp_file 		= splitted_exp_data_file[-1]
-
-			if len(splitted_exp_data_file) == 1:
-				self.exp_path 	= ''
-			else:
-				self.exp_path 	= '/'.join(splitted_exp_data_file[:-1])+'/'
-
 		if not isinstance(out_path,str):
 			raise ValueError('out_path must be string.\n \
 						It defines the location where the final levelscheme and (if requested) output file are stored.')
@@ -85,6 +72,9 @@ class CBSplot:
 			raise ValueError('write_output must be bool!')
 		else:
 			self.write_output = write_output
+
+		#already set exp_data_file which will be checked later on in self.run()
+		self.exp_data_file 	= exp_data_file
 
 		self.cbs_energies	= None
 		self.cbs_BE2		= None
@@ -100,6 +90,20 @@ class CBSplot:
 
 	def plot(self):
 		'''Plot experimental values alongside results of the CBS calculation'''
+
+		if not isinstance(self.exp_data_file,str):
+			raise ValueError('exp_data_file must be string pointing to a data file.\n \
+			 			This file contains all energies and transition strengths\n \
+						to be plotted in the experimental spectrum.')
+		else:
+			splitted_exp_data_file 	= self.exp_data_file.split('/')
+			self.exp_file 		= splitted_exp_data_file[-1]
+
+			if len(splitted_exp_data_file) == 1:
+				self.exp_path 	= ''
+			else:
+				self.exp_path 	= '/'.join(splitted_exp_data_file[:-1])+'/'
+
 		if not self.cbs_fit_success:
 			raise ValueError('No CBS calculation available.\n \
 				Either .run() was not invoked before .plot()\n \
