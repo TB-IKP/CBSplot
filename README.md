@@ -86,4 +86,5 @@ A minimal example can be found in the [example](example) directory.
 ## References
 
 <a name='Pie04a'>[1]</a> N. Pietralla and O.M. Gorbachenko, Phys. Rev. C **70**, 011304(R) (2004). [`doi:10.1103/PhysRevC.70.011304`](https://doi.org/10.1103/PhysRevC.70.011304).  
-<a name='Ree16a'>[2]</a> M. Reese (2008), [`cbsmodel`](https://sourceforge.net/projects/cbsmodel/).  
+<a name='Ree16a'>[2]</a> M. Reese (2008), [`cbsmodel`](https://sourceforge.net/projects/cbsmodel/).
+A maintained version can be obtained [here](https://github.com/op3/cbsmodel).  

@@ -99,7 +99,7 @@ def read_input(self):
 #---------------------------------------------------------------------------------------#
 
 def cbs_fit_data(self,*args):
-	'''Fit CBS to dta as indicated in cbsmodel input file'''
+	'''Fit CBS to data as indicated in cbsmodel input file'''
 
 	run_string  = 'A %i Z %i '% (self.A,self.Z)
 	run_string += 'Wu '
