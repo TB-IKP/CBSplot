@@ -83,6 +83,16 @@ cbs_154Sm.red_chi
 
 A minimal example can be found in the [example](example) directory.
 
+## License
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+ou should have received a copy of the GNU General Public License along with this program. If not, see https://www.gnu.org/licenses/.
+
+Copyright (C) 2020 Tobias Beck (tbeck@ikp.tu-darmstadt.de)
+
 ## References
 
 <a name='Pie04a'>[1]</a> N. Pietralla and O.M. Gorbachenko, Phys. Rev. C **70**, 011304(R) (2004). [`doi:10.1103/PhysRevC.70.011304`](https://doi.org/10.1103/PhysRevC.70.011304).  
